@@ -5,6 +5,11 @@ VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "bekk.JenkinsTest.WebApp", "bekk.JenkinsTest.WebApp\bekk.JenkinsTest.WebApp.csproj", "{16521CBF-C6F3-473D-BB6C-A7ED490925A1}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2D7D1505-2CA8-47B3-B275-3418BCD7E87E}"
+	ProjectSection(SolutionItems) = preProject
+		jenkinsfile = jenkinsfile
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
