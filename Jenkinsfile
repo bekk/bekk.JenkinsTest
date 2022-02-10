@@ -3,19 +3,19 @@ pipeline {
 	stages {
 		stage('Clean') {
 		  steps {
-			sh 'node --version'
+			bat 'node --version'
 		  }
 		}
 
 		stage('build') {
 			steps {
-				sh 'node --version'
+				bat 'node --version'
 			}
 		}
 
 		stage('post-build') {
 			steps {
-				sh 'node --version'
+				bat 'node --version'
 			}
 		}
 	}
