@@ -3,7 +3,7 @@ pipeline {
 	stages {
 		stage('Checkout') {
 			steps {
-				git(url: 'https://git.vegvesen.no/scm/timeplan/timeplan.git', branch: 'main')
+				git(url: 'https://git.vegvesen.no/scm/timeplan/timeplan.git', branch: 'master')
 			}
 		}
 
