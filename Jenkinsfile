@@ -9,7 +9,7 @@ pipeline {
 
 		stage('Clean') {
 			steps {
-				bat '${dotnet} clean --configuration Release --nologo'
+				bat '%dotnet% clean --configuration Release --nologo'
 			}
 		}
 	}
