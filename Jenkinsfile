@@ -3,7 +3,7 @@ pipeline {
 	stages {
 		stage('Clean') {
 		  steps {
-			sh '$dotnet clean --configuration $configuration --nologo'
+			sh 'node --version'
 		  }
 		}
 
