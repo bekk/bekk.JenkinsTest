@@ -9,30 +9,8 @@ pipeline {
 
 		stage('Clean') {
 			steps {
-				bat 'dotnet clean --configuration Release --nologo'
+				bat '$dotnet clean --configuration $configuration --nologo'
 			}
 		}
-
-		stage('Install and Build') {
-            environment {
-                appVersion = "6.1.${env.BUILD_NUMBER}"
-            }      
-            stages {
-                stage(".Net Core") {
-                    stages {
-                        stage('Restore Packages') {
-                            steps {
-                                bat 'dotnet restore "C:\projects\BEKK\bekk.JenkinsTest\bekk.JenkinsTest.WebApp"'
-                            }
-                        }
-                        stage('Build') {
-                            steps {
-                                bat "dotnet build "C:\projects\BEKK\bekk.JenkinsTest\bekk.JenkinsTest.WebApp" --configuration Release -p:VersionPrefix=${env.appVersion} -p:InformationalVersion=${env.appVersion}"
-                            }
-                        }
-                    }
-                }               
-            }
-        }
 	}
 }
