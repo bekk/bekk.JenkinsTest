@@ -8,6 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2D7D1505-2CA8-47B3-B275-3418BCD7E87E}"
 	ProjectSection(SolutionItems) = preProject
 		Jenkinsfile = Jenkinsfile
+		Readme.MD = Readme.MD
 	EndProjectSection
 EndProject
 Global
