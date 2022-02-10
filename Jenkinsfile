@@ -1,4 +1,4 @@
-﻿pipeline {
+pipeline {
 	agent any
 	stages {
 		stage('Clean') {
@@ -13,5 +13,10 @@
 			}
 		}
 
+		stage('post-build') {
+			steps {
+				sh 'node --version'
+			}
+		}
 	}
 }
