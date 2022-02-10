@@ -1,21 +1,15 @@
 pipeline {
 	agent any
 	stages {
-		stage('Clean') {
-		  steps {
-			bat 'node --version'
-		  }
-		}
-
-		stage('build') {
+		stage('Checkout') {
 			steps {
-				bat 'node --version'
+				git(url: 'https://git.vegvesen.no/scm/timeplan/timeplan.git', branch: 'main')
 			}
 		}
 
-		stage('post-build') {
+		stage('Clean') {
 			steps {
-				bat 'node --version'
+				bat '$dotnet clean --configuration $configuration --nologo'
 			}
 		}
 	}

@@ -1,0 +1,117 @@
+pipeline {
+  agent any
+  stages {
+    stage('Checkout') {
+      steps {
+        git(url: 'https://git.vegvesen.no/scm/timeplan/timeplan.git', branch: 'main', credentialsId: 'dl-bitbucket-jenkins')
+      }
+    }
+
+    stage('Clean') {
+      steps {
+        sh '$dotnet clean --configuration $configuration --nologo'
+      }
+    }
+
+    stage('Install and Build') {
+      environment {
+        appVersion = "6.1.${env.BUILD_NUMBER}"
+      }      
+        stages {
+            stage(".Net Core") {
+                stages {
+                    stage('Restore Packages') {
+                        steps {
+                            sh '$dotnet restore $project_path'
+                        }
+                    }
+                    stage('Build') {
+                        steps {
+                            sh "$dotnet build $project_path --configuration $configuration -p:VersionPrefix=${env.appVersion} -p:InformationalVersion=${env.appVersion}"
+                        }
+                    }
+                    stage('Publish') {
+                        steps {
+                            sh "$dotnet publish -r linux-x64 --self-contained false --configuration $configuration --nologo -p:VersionPrefix=${env.appVersion} -p:InformationalVersion=${env.appVersion}"
+                        }
+                    }
+                }
+            }
+            stage("Node") {
+                stages {
+                    stage('Install') {
+                        steps {
+                            dir('Vegvesen.Timeplan/ClientApp'){
+                                sh 'npm install'
+                            }
+                        }
+                    }
+                    stage('Build') {
+                        steps {
+                            dir('Vegvesen.Timeplan/ClientApp'){
+                                sh 'npm run-script build'
+                            }
+                        }
+                    }
+                    stage('Copy') {
+                        steps {
+                            dir('Vegvesen.Timeplan/ClientApp') {
+                              sh 'mkdir -p $result_path/wwwroot'
+                              sh 'cp -r build/* $result_path/wwwroot'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    stage('Create Zip') {
+      environment {
+        resultFile = "${env.result_path}/Vegvesen.Timeplan-0.1.${env.BUILD_NUMBER}.zip"
+      }
+      steps {
+        zip(zipFile: env.resultFile, dir: env.result_path, glob: '**/*')
+      }
+    }
+
+    stage('Upload to Artifactory') {
+      environment {
+        zipFile = "Vegvesen.Timeplan-0.1.${env.BUILD_NUMBER}.zip"
+      }
+      steps {
+        withCredentials(bindings: [usernamePassword(credentialsId: 'artifactory_snapshots', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+          pwsh(script: '''
+# Create credentials
+$secpasswd = ConvertTo-SecureString $env:PASSWORD -AsPlainText -Force
+$credential = New-Object System.Management.Automation.PSCredential($env:USERNAME, $secpasswd)
+
+# Upload file
+$url = "https://artrepo.vegvesen.no/artifactory/asp-dotnet-core-snapshots/timeplan/Vegvesen.Timeplan"
+$source = ($env:result_path, $env:zipFile) -Join "/"
+$destination = ($url, $env:zipFile) -Join "/"
+
+$sha1Hash = Get-FileHash $source -Algorithm SHA1 | Select-Object -ExpandProperty Hash
+$sha256Hash = Get-FileHash $source -Algorithm SHA256 | Select-Object -ExpandProperty Hash
+$headers =  @{"X-Checksum-Sha1" = $sha1Hash; "X-Checksum-Sha256" = $sha256Hash}
+
+try {
+    Write-Host "Uploading file $source to $destination"
+    $response = Invoke-RestMethod -Uri $destination -Method "PUT" -Credential $credential -InFile $source -Headers $headers
+}
+catch {
+    Write-Host "StatusCode:" $_.Exception.Response.StatusCode.value__ 
+    exit 1
+}        ''', label: 'Upload to Artifactory')
+        }
+
+      }
+    }
+  }
+  environment {
+    dotnet = '/data/prog/dotnet/core-sdk-5.0.103/dotnet'
+    project_path = 'Vegvesen.Timeplan/Vegvesen.Timeplan.csproj'
+    configuration = 'Release'
+    result_path = "${env.WORKSPACE}/Vegvesen.Timeplan/bin/$configuration/net5.0/linux-x64/publish"
+  }
+}
