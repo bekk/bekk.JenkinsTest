@@ -9,6 +9,7 @@ pipeline {
 
 		stage('Clean') {
 			steps {
+                echo "${env.'ProgramFiles(x86)'}"
                 echo "%dotnet% %configuration%"
 				bat '%dotnet% clean --configuration %configuration% --nologo'
 			}
