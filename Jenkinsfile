@@ -42,7 +42,7 @@ pipeline {
 
         stage('Create Zip') {
           environment {
-            resultFile = "${env.result_path}/Vegvesen.Timeplan-0.1.${env.BUILD_NUMBER}.zip"
+            resultFile = "${env.result_path}/bekk.JenkinsTest.WebApp-0.1.${env.BUILD_NUMBER}.zip"
           }
           steps {
             zip(zipFile: env.resultFile, dir: env.result_path, glob: '**/*')
