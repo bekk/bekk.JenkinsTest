@@ -52,7 +52,7 @@ pipeline {
 
     environment {
         dotnet = "dotnet"
-        project_path = "/projects/BEKK/bekk.JenkinsTest/bekk.JenkinsTest.WebApp"
+        project_path = "c:\\projects\\BEKK\\bekk.JenkinsTest\\bekk.JenkinsTest.WebApp\\bekk.JenkinsTest.WebApp.csproj"
         configuration = "Release"
         result_path = "${env.WORKSPACE}/bekk.JenkinsTest/bin/$configuration/net5.0/linux-x64/publish"
       }
