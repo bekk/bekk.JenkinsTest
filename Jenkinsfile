@@ -9,10 +9,7 @@ pipeline {
 
 		stage('Clean') {
 			steps {
-                echo "${env.'ProgramFiles(x86)'}"
-                echo "${env.dotnet}"
-                echo "%dotnet% %configuration%"
-				bat '%dotnet% clean --configuration %configuration% --nologo'
+				bat '${env.dotnet} clean --configuration ${env.configuration} --nologo'
 			}
 		}
 
@@ -25,17 +22,17 @@ pipeline {
                     stages {
                         stage('Restore Packages') {
                             steps {
-                                bat '%dotnet% restore $project_path'
+                                bat '${env.dotnet} restore ${env.project_path}'
                             }
                         }
                         stage('Build') {
                             steps {
-                                bat "%dotnet% build $project_path --configuration $configuration -p:VersionPrefix=${env.appVersion} -p:InformationalVersion=${env.appVersion}"
+                                bat "${env.dotnet} build ${env.project_path} --configuration ${env.configuration} -p:VersionPrefix=${env.appVersion} -p:InformationalVersion=${env.appVersion}"
                             }
                         }
                         stage('Publish') {
                             steps {
-                                bat "%dotnet% publish -r linux-x64 --self-contained false --configuration $configuration --nologo -p:VersionPrefix=${env.appVersion} -p:InformationalVersion=${env.appVersion}"
+                                bat "${env.dotnet} publish -r linux-x64 --self-contained false --configuration ${env.configuration} --nologo -p:VersionPrefix=${env.appVersion} -p:InformationalVersion=${env.appVersion}"
                             }
                         }
                     }
