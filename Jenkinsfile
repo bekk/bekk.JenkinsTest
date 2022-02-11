@@ -54,7 +54,7 @@ pipeline {
                 zipFile = "bekk.JenkinsTest.WebApp-0.1.${env.BUILD_NUMBER}.zip"
             }
             steps { 
-                echo ${env.zipFile}
+                echo "${env.zipFile}"
             }
         }
 	}
