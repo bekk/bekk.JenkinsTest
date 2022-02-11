@@ -48,6 +48,15 @@ pipeline {
             zip(zipFile: env.resultFile, dir: env.result_path, glob: "**/*")
           }
         }
+
+        stage('Upload to Artifactory') {
+            environment {
+                zipFile = "bekk.JenkinsTest.WebApp-0.1.${env.BUILD_NUMBER}.zip"
+            }
+            steps { 
+                echo ${env.zipFile}
+            }
+        }
 	}
 
     environment {
