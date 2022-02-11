@@ -9,8 +9,8 @@ pipeline {
 
 		stage('Clean') {
 			steps {
-                echo %dotnet%
-				bat '%dotnet% clean --configuration $configuration --nologo'
+                echo "%dotnet% %configuration%"
+				bat '%dotnet% clean --configuration %configuration% --nologo'
 			}
 		}
 
